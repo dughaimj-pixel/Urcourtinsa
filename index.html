@@ -7,22 +7,25 @@
 <style>
 /* Layout: dark sandstone page, full-bleed scene hero, booking wizard beside a sticky summary, then proposal sections. */
 :root{
-  --bg:#17110d;
-  --surface:#221a14;
-  --surface-2:#2c221a;
-  --line:#3d3025;
-  --fg:#f1e6d3;
-  --muted:#b5a38b;
-  --accent:#c6ea4b;
-  --accent-ink:#1b2208;
-  --warn:#e8a15a;
+  --bg:#33261e;
+  --surface:rgba(255,244,226,.075);
+  --surface-2:rgba(255,244,226,.12);
+  --line:rgba(255,236,210,.2);
+  --fg:#f8eedd;
+  --muted:#d6c3a6;
+  --accent:#d3ec6e;
+  --accent-ink:#1f2a0a;
+  --warn:#f2b574;
+  --peach:#f0b184;
+  --sage:#9db894;
+  --rose:#d99a8c;
   --serif:'Instrument Serif','Times New Roman',serif;
   --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   color-scheme:dark;
 }
 :root[lang="ar"]{--serif:'IBM Plex Sans Arabic','DM Sans',system-ui,sans-serif;--sans:'IBM Plex Sans Arabic','DM Sans',system-ui,sans-serif}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body{background:radial-gradient(900px 620px at 88% -4%,rgba(240,177,132,.30),transparent 62%),radial-gradient(800px 640px at 2% 28%,rgba(157,184,148,.22),transparent 62%),radial-gradient(900px 700px at 70% 62%,rgba(217,154,140,.16),transparent 62%),radial-gradient(800px 600px at 10% 92%,rgba(157,184,148,.16),transparent 62%),var(--bg);background-attachment:fixed;color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.05;margin:0;text-wrap:balance}
 :root[lang="ar"] h1,:root[lang="ar"] h2,:root[lang="ar"] h3{font-weight:700;line-height:1.3}
 p{margin:0}
@@ -32,6 +35,23 @@ a{color:inherit}
 .wrap{max-width:1180px;margin-inline:auto}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500}
 :root[lang="ar"] .eyebrow{letter-spacing:0;font-size:13px}
+.glow{font-style:italic;background:linear-gradient(90deg,var(--peach),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+:root[lang="ar"] .glow{font-style:normal}
+.step,.summary,.card,.panel{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 18px 50px rgba(20,10,5,.18)}
+.btn.primary{box-shadow:0 10px 34px rgba(211,236,110,.30)}
+.orb{position:absolute;border-radius:50%;filter:blur(64px);pointer-events:none;z-index:0}
+.o1{width:440px;height:440px;background:var(--peach);left:-100px;top:30px;opacity:.40}
+.o2{width:380px;height:380px;background:var(--sage);left:38%;bottom:-160px;opacity:.32}
+.o3{width:320px;height:320px;background:var(--rose);right:-80px;top:-70px;opacity:.40}
+@media (prefers-reduced-motion:no-preference){
+ @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-16px)}}
+ @keyframes drift{from{transform:translate(0,0)}to{transform:translate(30px,-24px)}}
+ @keyframes twinkle{from{opacity:.25}to{opacity:1}}
+ .fl1{animation:bob 6s ease-in-out infinite alternate}.fl2{animation:bob 7.5s ease-in-out -2s infinite alternate}.fl3{animation:bob 5s ease-in-out -1s infinite alternate}
+ .o1,.o2,.o3{animation:drift 14s ease-in-out infinite alternate}
+ .tw{animation:twinkle 3s ease-in-out infinite alternate}
+}
+.venue .ph svg,.card .ph svg{filter:brightness(1.14) saturate(1.05)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:transparent;padding:12px 20px;border-radius:999px;font-weight:500;text-decoration:none;min-height:44px}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
 .btn.primary:disabled{opacity:.4;cursor:not-allowed}
@@ -56,14 +76,17 @@ nav.links a:hover{color:var(--fg)}
 .hero{position:relative;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));border-bottom:1px solid var(--line);overflow:hidden}
 .hero .scene{position:absolute;inset:0}
 .hero .scene svg{width:100%;height:100%;display:block}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,17,13,.35),rgba(23,17,13,.15) 40%,rgba(23,17,13,.88));pointer-events:none}
-.hero-in{position:relative;z-index:2;padding-block:clamp(64px,12vw,150px) 36px;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:44px;align-items:center}
+.figure{aspect-ratio:4/5;border-radius:20px;overflow:hidden;border:1px solid rgba(255,240,220,.22);max-height:640px;width:100%;justify-self:end;box-shadow:0 30px 80px rgba(10,4,0,.45)}
+.figure svg{width:100%;height:100%;display:block}
+@media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr)}.figure{aspect-ratio:4/3;justify-self:stretch}}
+.hero-in{position:relative;z-index:2;padding-block:clamp(40px,6vw,72px) 36px;padding-inline:max(16px,env(safe-area-inset-left,0px))}
 .hero h1{font-size:clamp(44px,8vw,96px);max-width:12ch;margin-block:14px 18px}
 :root[lang="ar"] .hero h1{font-size:clamp(34px,6vw,68px);max-width:16ch}
 .hero p.sub{max-width:52ch;font-size:18px;color:#e5d6bd;margin-bottom:26px}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:48px;border-radius:14px;overflow:hidden}
-.stats div{background:rgba(23,17,13,.82);padding:16px 18px;font-size:14px;color:#e5d6bd}
+.stats div{background:var(--surface);padding:16px 18px;font-size:14px;color:#e5d6bd}
 .stats b{display:block;font-family:var(--serif);font-size:28px;color:var(--fg);font-weight:400}
 
 section{padding-block:clamp(56px,8vw,96px)}
@@ -89,7 +112,7 @@ section h2{font-size:clamp(34px,5vw,56px);margin-block:8px 10px}
 .venue{padding:0;overflow:hidden}
 .venue .ph{aspect-ratio:16/10;display:block;width:100%}
 .venue .ph svg{width:100%;height:100%;display:block}
-.venue div.tx{padding:10px 14px 12px;display:flex;flex-direction:column}
+.venue .tx{padding:12px 14px 14px;display:flex;flex-direction:column}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:420px}
 .cal .dow{font-size:11px;color:var(--muted);text-align:center}
 .cal button{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-variant-numeric:tabular-nums;min-width:0}
@@ -158,6 +181,10 @@ ul.pl{margin:0;padding-inline-start:18px;display:grid;gap:8px;color:#dccdb5;font
 .kpi h3{font-size:22px;margin-bottom:6px}
 :root[lang="ar"] .kpi h3{font-size:18px}
 .kpi p{font-size:14px;color:var(--muted)}
+.two{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.va{color:#dccdb5;font-size:15px;margin-bottom:20px}
+.vs{display:block;font-family:var(--serif);font-weight:400;font-size:48px;color:var(--accent);line-height:1.05}
+.vl{display:block;font-size:13px;color:var(--muted);margin-top:6px}
 .opmodel{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
 footer{border-top:1px solid var(--line);padding-block:36px calc(36px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:13px;display:grid;gap:8px}
 footer b{color:var(--fg);font-family:var(--serif);font-size:22px;font-weight:400}
@@ -167,19 +194,21 @@ footer b{color:var(--fg);font-family:var(--serif);font-size:22px;font-weight:400
 <header class="top"><div class="wrap top-in">
   <a class="logo" href="#top"><i></i>Court Connect AlUla</a>
   <nav class="links">
-    <a href="#booking" data-t="nav_book"></a><a href="#academies" data-t="nav_acad"></a><a href="#partnership" data-t="nav_frame"></a><a href="#roadmap" data-t="nav_road"></a><a href="#metrics" data-t="nav_kpi"></a><a href="#operating" data-t="nav_op"></a>
+    <a href="#booking" data-t="nav_book"></a><a href="#academies" data-t="nav_acad"></a><a href="#partnership" data-t="nav_frame"></a><a href="#roadmap" data-t="nav_road"></a><a href="#metrics" data-t="nav_kpi"></a><a href="#vision" data-t="nav_vis"></a><a href="#operating" data-t="nav_op"></a>
   </nav>
   <div class="lang" role="group" aria-label="Language"><button id="l-en" aria-pressed="true">EN</button><button id="l-ar" aria-pressed="false">العربية</button></div>
   <a class="btn primary small" href="#booking" data-t="book_btn"></a>
 </div></header>
 
 <div class="hero" id="top">
-  <div class="scene" id="heroScene"></div>
+  <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
   <div class="wrap hero-in">
+   <div class="hero-grid"><div class="copy">
     <span class="eyebrow" data-t="eyebrow"></span>
-    <h1 data-t="h1"></h1>
+    <h1 data-t="h1" data-html></h1>
     <p class="sub" data-t="sub"></p>
     <div class="cta"><a class="btn primary" href="#booking" data-t="cta1"></a><a class="btn" href="#academies" data-t="cta2"></a></div>
+   </div><div class="figure" id="heroScene"></div></div>
     <div class="stats">
       <div><b>4</b><span data-t="s1"></span></div>
       <div><b>STF</b><span data-t="s2"></span></div>
@@ -303,6 +332,19 @@ footer b{color:var(--fg);font-family:var(--serif);font-size:22px;font-weight:400
   </div>
 </section>
 
+<section id="vision" style="border-top:1px solid var(--line)">
+  <span class="eyebrow" data-t="v_eyebrow"></span>
+  <h2 data-t="v_h2"></h2>
+  <p class="lede" data-t="v_p"></p>
+  <div class="two">
+    <div class="panel"><h3 data-t="vq1"></h3><p class="va" data-t="va1"></p><b class="vs" data-t="vs1"></b><span class="vl" data-t="vl1"></span></div>
+    <div class="panel"><h3 data-t="vq2"></h3><p class="va" data-t="va2"></p><b class="vs" data-t="vs2"></b><span class="vl" data-t="vl2"></span></div>
+    <div class="panel"><h3 data-t="vq3"></h3><p class="va" data-t="va3"></p><b class="vs" data-t="vs3"></b><span class="vl" data-t="vl3"></span></div>
+    <div class="panel"><h3 data-t="vq4"></h3><p class="va" data-t="va4"></p><b class="vs" data-t="vs4"></b><span class="vl" data-t="vl4"></span></div>
+  </div>
+  <p class="fine" data-t="v_src"></p>
+</section>
+
 <section id="operating" style="border-top:1px solid var(--line)">
   <div class="opmodel">
     <div><span class="eyebrow" data-t="op_eyebrow"></span><h2 data-t="op_h2"></h2></div>
@@ -321,6 +363,7 @@ const MOODS={
   gold:{sky:['#2a2a3d','#b4683c','#f3bb72'],sun:'#ffe2ad',sx:.68,sy:.46,a:'#9b5733',b:'#6a3822',c:'#46261a',ground:'#2f1d14'},
   dawn:{sky:['#3b4764','#c58f86','#f4d4a6'],sun:'#fff0d0',sx:.3,sy:.5,a:'#a76b52',b:'#7a4a3a',c:'#4f3027',ground:'#34211a'},
   dusk:{sky:['#161830','#7b3a4c','#e58b52'],sun:'#ffb06a',sx:.8,sy:.55,a:'#6e3a30',b:'#4a2824',c:'#2f1a1a',ground:'#24150f'},
+  night:{sky:['#080b1e','#1b2447','#6e5160'],sun:'#e6ebff',sx:.76,sy:.2,a:'#2b2332',b:'#1d1824',c:'#130f18',ground:'#120d0c'},
   noon:{sky:['#5f96bf','#9cc2d4','#ecdfc0'],sun:'#fffbe8',sx:.5,sy:.2,a:'#b97b4c',b:'#8c5736',c:'#5e3a26',ground:'#3d2a1d'}
 };
 function mesaPath(r,W,H,base,minH,maxH){
@@ -340,7 +383,7 @@ function scene(mood,seed,court,W,H){
   const surf=court==='clay'?'#b0502e':'#3d6e76';
   const apron=court==='clay'?'#8f3f24':'#7a4636';
   const na=P(0,.5),nb=P(1,.5),sw=Math.max(3,H*.006);
-  const dark=mood==='dusk';
+  const dark=mood==='dusk'||mood==='night',night=mood==='night';
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tennis court in AlUla sandstone landscape">
 <defs>
 <linearGradient id="${id}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m.sky[0]}"/><stop offset=".55" stop-color="${m.sky[1]}"/><stop offset="1" stop-color="${m.sky[2]}"/></linearGradient>
@@ -353,6 +396,7 @@ function scene(mood,seed,court,W,H){
 </defs>
 <rect width="${W}" height="${H}" fill="url(#${id}k)"/>
 <rect width="${W}" height="${H}" fill="url(#${id}s)"/>
+${night?Array.from({length:90},()=>`<circle cx="${(r()*W).toFixed(0)}" cy="${(r()*hz*.85).toFixed(0)}" r="${(.6+r()*1.5).toFixed(1)}" fill="#fff" opacity="${(.25+r()*.65).toFixed(2)}"/>`).join(''):''}
 <g filter="url(#${id}b)" opacity=".9"><polygon points="${mesaPath(r,W,H,hz,H*.1,H*.2)}" fill="${m.a}" opacity=".55"/></g>
 <polygon points="${mesaPath(r,W,H,hz+H*.04,H*.14,H*.3)}" fill="${m.a}"/><polygon points="${mesaPath(r,W,H,hz+H*.04,H*.14,H*.3)}" fill="url(#${id}p)"/>
 <polygon points="${mesaPath(r,W,H,hz+H*.09,H*.1,H*.22)}" fill="${m.b}"/>
@@ -365,15 +409,120 @@ ${L(.12,0,.12,1,sw*.8)}${L(.88,0,.88,1,sw*.8)}${L(.12,.24,.88,.24,sw*.7)}${L(.12
 <line x1="${(na[0]-W*.02).toFixed(1)}" y1="${na[1].toFixed(1)}" x2="${(nb[0]+W*.02).toFixed(1)}" y2="${nb[1].toFixed(1)}" stroke="#111" stroke-width="${sw*4}" stroke-opacity=".8"/>
 <line x1="${na[0].toFixed(1)}" y1="${(na[1]-sw*2.2).toFixed(1)}" x2="${nb[0].toFixed(1)}" y2="${(nb[1]-sw*2.2).toFixed(1)}" stroke="#f4efe4" stroke-width="${sw*1.2}"/>
 <rect x="${(na[0]-W*.02).toFixed(1)}" y="${(na[1]-sw*7).toFixed(1)}" width="${sw*1.6}" height="${sw*8}" fill="#222"/><rect x="${(nb[0]+W*.02-sw*1.6).toFixed(1)}" y="${(nb[1]-sw*7).toFixed(1)}" width="${sw*1.6}" height="${sw*8}" fill="#222"/>
+${night?`<ellipse cx="${W*.5}" cy="${H*.88}" rx="${W*.42}" ry="${H*.2}" fill="#ffe6b0" opacity=".22" filter="url(#${id}b)"/><ellipse cx="${W*.5}" cy="${H*.84}" rx="${W*.3}" ry="${H*.12}" fill="#fff3d6" opacity=".18" filter="url(#${id}b)"/>${[.14,.86].map(x=>`<line x1="${W*x}" y1="${H*.86}" x2="${W*x}" y2="${H*.3}" stroke="#0b0b10" stroke-width="${Math.max(3,W*.004)}"/><circle cx="${W*x}" cy="${H*.3}" r="${W*.008}" fill="#fff4d2"/><circle cx="${W*x}" cy="${H*.3}" r="${W*.05}" fill="#ffe6b0" opacity=".25" filter="url(#${id}b)"/>`).join('')}`:''}
 <rect width="${W}" height="${H}" fill="url(#${id}v)"/>
 <rect width="${W}" height="${H}" filter="url(#${id}n)" opacity="${dark?.5:.38}" style="mix-blend-mode:overlay"/>
+</svg>`;
+}
+
+
+function racketScene(W,H){
+  const id='r'+(sid++),r=rng(5);
+  let strings='';
+  for(let x=-150;x<=150;x+=20)strings+=`<line x1="${x}" y1="-330" x2="${x}" y2="70"/>`;
+  for(let y=-320;y<=60;y+=20)strings+=`<line x1="-170" y1="${y}" x2="170" y2="${y}"/>`;
+  const star=(x,y,k,o)=>`<path class="tw" style="animation-delay:${(r()*3).toFixed(1)}s" transform="translate(${x} ${y}) scale(${k})" d="M0 -12 C1.5 -4 4 -1.5 12 0 C4 1.5 1.5 4 0 12 C-1.5 4 -4 1.5 -12 0 C-4 -1.5 -1.5 -4 0 -12Z" fill="#fff6e2" opacity="${o}"/>`;
+  let sparks='';
+  for(let i=0;i<16;i++)sparks+=star((r()*W).toFixed(0),(r()*H*.85).toFixed(0),(.35+r()*.9).toFixed(2),(.45+r()*.5).toFixed(2));
+  const ball=(cx,cy,R,blur,cls)=>`<g class="${cls}" ${blur?`filter="url(#${id}bl)"`:''}><ellipse cx="${cx+R*.3}" cy="${cy+R*1.5}" rx="${R*.85}" ry="${R*.14}" fill="#4a2a3a" opacity=".25" filter="url(#${id}bl)"/><circle cx="${cx}" cy="${cy}" r="${R*1.7}" fill="url(#${id}hl)"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#${id}bg)"/><path d="M${cx-R*.8} ${cy-R*.6} C${cx-R*.1} ${cy-R*.25} ${cx-R*.1} ${cy+R*.25} ${cx-R*.8} ${cy+R*.6}" fill="none" stroke="#fffbe9" stroke-width="${R*.09}" stroke-linecap="round" opacity=".92"/><path d="M${cx+R*.8} ${cy-R*.6} C${cx+R*.1} ${cy-R*.25} ${cx+R*.1} ${cy+R*.25} ${cx+R*.8} ${cy+R*.6}" fill="none" stroke="#fffbe9" stroke-width="${R*.09}" stroke-linecap="round" opacity=".92"/><circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#${id}sh)"/></g>`;
+  let tape='';
+  for(let i=0;i<9;i++)tape+=`<path d="M-18 ${158+i*20} L18 ${140+i*20}" stroke="#8aa82c" stroke-width="3" fill="none"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A tennis racket and tennis balls in a dreamy peach and lavender sky">
+<defs>
+<linearGradient id="${id}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a4a78"/><stop offset=".42" stop-color="#c98a9c"/><stop offset=".72" stop-color="#f2ac86"/><stop offset="1" stop-color="#f7d9a8"/></linearGradient>
+<radialGradient id="${id}s" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff0cf" stop-opacity=".9"/><stop offset=".5" stop-color="#ffd7a6" stop-opacity=".35"/><stop offset="1" stop-color="#ffd7a6" stop-opacity="0"/></radialGradient>
+<linearGradient id="${id}f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#f1c7a6"/></linearGradient>
+<radialGradient id="${id}bg" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#f4ffa6"/><stop offset=".55" stop-color="#d3ec6e"/><stop offset="1" stop-color="#9dc238"/></radialGradient>
+<radialGradient id="${id}sh" cx=".4" cy=".34" r=".75"><stop offset=".62" stop-color="#1f2a0a" stop-opacity="0"/><stop offset="1" stop-color="#1f2a0a" stop-opacity=".38"/></radialGradient>
+<radialGradient id="${id}hl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e8ff8a" stop-opacity=".42"/><stop offset="1" stop-color="#e8ff8a" stop-opacity="0"/></radialGradient>
+<clipPath id="${id}c"><ellipse cx="0" cy="-130" rx="146" ry="186"/></clipPath>
+<clipPath id="${id}g"><rect x="-17" y="146" width="34" height="176" rx="12"/></clipPath>
+<filter id="${id}bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${W*.012}"/></filter>
+<filter id="${id}b2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${W*.035}"/></filter>
+<filter id="${id}n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 .95  0 0 0 0 .9  0 0 0 .35 -.08"/></filter>
+</defs>
+<rect width="${W}" height="${H}" fill="url(#${id}k)"/>
+<circle cx="${W*.5}" cy="${H*.6}" r="${H*.5}" fill="url(#${id}s)"/>
+<g filter="url(#${id}b2)" fill="#fff6e6"><ellipse cx="${W*.2}" cy="${H*.22}" rx="${W*.26}" ry="${H*.035}" opacity=".3"/><ellipse cx="${W*.78}" cy="${H*.12}" rx="${W*.28}" ry="${H*.03}" opacity=".26"/><ellipse cx="${W*.6}" cy="${H*.9}" rx="${W*.5}" ry="${H*.05}" opacity=".35"/></g>
+${sparks}
+${ball(W*.16,H*.3,34,true,'fl3')}
+<g transform="translate(${W*.47} ${H*.64}) rotate(-22)">
+<ellipse cx="0" cy="-130" rx="205" ry="245" fill="#ffe2b8" opacity=".3" filter="url(#${id}b2)"/>
+<ellipse cx="0" cy="-130" rx="146" ry="186" fill="#ffffff" opacity=".07"/>
+<g clip-path="url(#${id}c)" stroke="#fffaf0" stroke-opacity=".65" stroke-width="2.2">${strings}</g>
+<ellipse cx="0" cy="-130" rx="152" ry="192" fill="none" stroke="url(#${id}f)" stroke-width="17"/>
+<ellipse cx="0" cy="-130" rx="143" ry="183" fill="none" stroke="#c98a7a" stroke-opacity=".45" stroke-width="3"/>
+<path d="M-60 54 L-16 152 M60 54 L16 152" fill="none" stroke="url(#${id}f)" stroke-width="14" stroke-linecap="round"/>
+<path d="M-60 54 Q0 86 60 54" fill="none" stroke="url(#${id}f)" stroke-width="11" stroke-linecap="round"/>
+<rect x="-17" y="146" width="34" height="176" rx="12" fill="#d3ec6e"/>
+<g clip-path="url(#${id}g)">${tape}</g>
+<rect x="-23" y="318" width="46" height="24" rx="9" fill="#f7e2c6"/>
+</g>
+${ball(W*.76,H*.4,76,false,'fl1')}
+${ball(W*.24,H*.82,60,false,'fl2')}
+${ball(W*.8,H*.77,40,false,'fl3')}
+<rect width="${W}" height="${H}" filter="url(#${id}n)" opacity=".5" style="mix-blend-mode:soft-light"/>
+</svg>`;
+}
+
+
+function stillLife(W,H){
+  const id='k'+(sid++);
+  let strings='',strShadow='';
+  for(let x=-140;x<=140;x+=17)strings+=`<line x1="${x}" y1="-190" x2="${x}" y2="190"/>`;
+  for(let y=-180;y<=180;y+=17)strings+=`<line x1="-150" y1="${y}" x2="150" y2="${y}"/>`;
+  let tape='';
+  for(let i=0;i<12;i++)tape+=`<path d="M-18 ${268+i*19} L18 ${252+i*19}" stroke="#34363b" stroke-width="3" fill="none"/>`;
+  const ball=(cx,cy,R,blur)=>`<g ${blur?`filter="url(#${id}d)"`:''}>
+<ellipse cx="${cx+R*.32}" cy="${cy+R*.4}" rx="${R*1.02}" ry="${R*1.0}" fill="#1a0a02" opacity=".5" filter="url(#${id}s)"/>
+<g filter="url(#${id}z)"><circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#${id}bg)"/>
+<path d="M${cx-R*.86} ${cy-R*.5} C${cx-R*.2} ${cy-R*.2} ${cx-R*.2} ${cy+R*.2} ${cx-R*.86} ${cy+R*.5}" fill="none" stroke="#f4f0e0" stroke-width="${R*.075}" stroke-linecap="round" opacity=".88"/>
+<path d="M${cx+R*.86} ${cy-R*.5} C${cx+R*.2} ${cy-R*.2} ${cx+R*.2} ${cy+R*.2} ${cx+R*.86} ${cy+R*.5}" fill="none" stroke="#f4f0e0" stroke-width="${R*.075}" stroke-linecap="round" opacity=".88"/></g>
+<circle cx="${cx}" cy="${cy}" r="${R}" fill="url(#${id}sh)"/></g>`;
+  const racket=(shadow)=>`
+<ellipse cx="0" cy="0" rx="150" ry="190" fill="none" stroke="${shadow?'#000':`url(#${id}fr)`}" stroke-width="21"/>
+<g clip-path="url(#${id}c)" stroke="${shadow?'#000':'#f2eee4'}" stroke-opacity="${shadow?.55:.78}" stroke-width="${shadow?1.8:1.6}">${strings}</g>
+<path d="M-62 176 L-17 262 M62 176 L17 262" fill="none" stroke="${shadow?'#000':`url(#${id}fr)`}" stroke-width="17" stroke-linecap="round"/>
+<path d="M-62 176 Q0 212 62 176" fill="none" stroke="${shadow?'#000':`url(#${id}fr)`}" stroke-width="13" stroke-linecap="round"/>
+<rect x="-19" y="256" width="38" height="252" rx="13" fill="${shadow?'#000':'#1b1c1f'}"/>
+${shadow?'':`<g clip-path="url(#${id}g)">${tape}</g><rect x="-22" y="498" width="44" height="26" rx="9" fill="#25272b"/><path d="M-60 176 Q0 210 60 176" fill="none" stroke="#d3ec6e" stroke-width="3" opacity=".9"/><ellipse cx="0" cy="0" rx="159" ry="199" fill="none" stroke="#ffffff" stroke-opacity=".13" stroke-width="3"/>`}`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A tennis racket and tennis balls lying on a red clay court in warm evening light">
+<defs>
+<linearGradient id="${id}l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd9a8" stop-opacity=".32"/><stop offset=".5" stop-color="#ffd9a8" stop-opacity="0"/><stop offset="1" stop-color="#2a0e04" stop-opacity=".42"/></linearGradient>
+<radialGradient id="${id}b" cx=".85" cy=".08" r=".7"><stop offset="0" stop-color="#ffd8a0" stop-opacity=".5"/><stop offset="1" stop-color="#ffd8a0" stop-opacity="0"/></radialGradient>
+<radialGradient id="${id}v" cx=".5" cy=".5" r=".78"><stop offset=".55" stop-color="#1a0802" stop-opacity="0"/><stop offset="1" stop-color="#1a0802" stop-opacity=".55"/></radialGradient>
+<linearGradient id="${id}fr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#43454b"/><stop offset=".5" stop-color="#17181b"/><stop offset="1" stop-color="#2c2d31"/></linearGradient>
+<radialGradient id="${id}bg" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#e6f27a"/><stop offset=".6" stop-color="#cfe04a"/><stop offset="1" stop-color="#a3b82c"/></radialGradient>
+<radialGradient id="${id}sh" cx=".35" cy=".3" r=".8"><stop offset=".55" stop-color="#2a3306" stop-opacity="0"/><stop offset="1" stop-color="#2a3306" stop-opacity=".5"/></radialGradient>
+<clipPath id="${id}c"><ellipse cx="0" cy="0" rx="142" ry="182"/></clipPath>
+<clipPath id="${id}g"><rect x="-19" y="256" width="38" height="252" rx="13"/></clipPath>
+<filter id="${id}s" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="14"/></filter>
+<filter id="${id}d" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+<filter id="${id}k" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="5"/></filter>
+<filter id="${id}z" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="5" result="d"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 .1  0 0 0 0 .12  0 0 0 0 0  0 0 0 1.1 -.35" result="g"/><feComposite in="g" in2="d" operator="in" result="gc"/><feMerge><feMergeNode in="d"/><feMergeNode in="gc"/></feMerge></filter>
+<filter id="${id}w" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".09 .12" numOctaves="3" seed="8" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -5 3.3" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter>
+<filter id="${id}n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" seed="2" result="a"/><feColorMatrix in="a" type="matrix" values="0 0 0 0 .35  0 0 0 0 .12  0 0 0 0 .04  0 0 0 1.6 -.45"/></filter>
+<filter id="${id}m" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="6" result="a"/><feColorMatrix in="a" type="matrix" values="0 0 0 0 .75  0 0 0 0 .3  0 0 0 0 .14  0 0 0 1.2 -.35"/></filter>
+</defs>
+<rect width="${W}" height="${H}" fill="#a8502d"/>
+<rect width="${W}" height="${H}" filter="url(#${id}m)" opacity=".55"/>
+<rect width="${W}" height="${H}" filter="url(#${id}n)" opacity=".7"/>
+<g transform="rotate(-7 400 640)"><rect x="-120" y="604" width="1040" height="26" fill="#f0e6d4" filter="url(#${id}w)" opacity=".92"/></g>
+<g filter="url(#${id}k)" opacity=".42" transform="translate(26 34)"><g transform="translate(500 330) rotate(28)">${racket(true)}</g></g>
+<g transform="translate(500 330) rotate(28)">${racket(false)}</g>
+${ball(188,236,64,false)}
+${ball(612,806,70,false)}
+${ball(104,846,66,true)}
+<rect width="${W}" height="${H}" fill="url(#${id}l)"/>
+<rect width="${W}" height="${H}" fill="url(#${id}b)"/>
+<rect width="${W}" height="${H}" fill="url(#${id}v)"/>
 </svg>`;
 }
 
 /* ---------- Text ---------- */
 const T={en:{
 nav_book:'Book',nav_acad:'Academies',nav_frame:'Partnership',nav_road:'Roadmap',nav_kpi:'Metrics',nav_op:'Operating model',book_btn:'Book court',
-eyebrow:'RCU × Saudi Tennis Federation · Partnership proposal',h1:'Your court, your coach, your game. All in AlUla.',
+eyebrow:'RCU × Saudi Tennis Federation · Partnership proposal',h1:'Your court, your coach, <em class="glow">your game.</em> All in AlUla.',
 sub:'One booking page for residents and visitors: AlUla courts, coaches, gear at the court desk, junior academies, and an easy way to invite whoever you play with.',
 cta1:'Book a session',cta2:'Find an academy',s1:'proposed venues in AlUla neighbourhoods',s2:'coaching, proposed to be led by STF-certified coaches',s3:'before your session, gear ready at the court desk',s4:'surfaces in the sample: clay and hard court',
 bk_eyebrow:'Booking prototype',bk_h2:'Reserve your session',bk_p:'Pick a venue, a coach or a friend to play with, then a time. Courts, coaches, prices and availability shown here are sample data.',
@@ -405,11 +554,18 @@ pilot:'Why these two neighbourhoods (proposed): Old Town draws the most visitors
 kp_eyebrow:'Key performance indicators',kp_h2:'How success could be measured.',kp_p:'Indicative targets for discussion. Final targets would be agreed with both organisations.',
 k1_h:'Utilisation',k1_p:'Court occupancy in off-peak hours. Peak-hour target of 85%.',k2_h:'Academy enrolments',k2_p:'Junior and adult places filled in the first full season.',k3_h:'Local youth',k3_p:'Share of junior places taken by AlUla residents.',k4_h:'Experience',k4_p:'Average player and visitor satisfaction rating.',
 op_eyebrow:'Operational concept',op_h2:'Proposed operating model',op_p1:'Court Connect would act only as the digital booking layer. Venues would be operated and maintained by RCU or designated venue operators, and coaching programmes and staff certification would be coordinated with the Saudi Tennis Federation.',op_p2:'Equipment could start at small collection points at participating courts, with delivery to the court desk added as demand shows it is needed.',op_fine:'This is a proposed structure for evaluation, not an approved arrangement.',
+nav_vis:'Vision',
+v_eyebrow:'Our vision',v_h2:'Why we are building Court Connect AlUla',v_p:'Four questions this proposal answers.',
+vq1:'Why are we doing this?',va1:'Sport is a national quality-of-life priority and AlUla is becoming a year-round destination. Tennis needs two players, a court, a coach and kit. Court Connect makes that one booking.',vs1:'40%',vl1:'weekly sport participation target by 2030 (Quality of Life Program)',
+vq2:'What is the value?',va2:'Residents get simple booking for families, juniors and adults. Visitors get a new activity with kit at the court desk. RCU gets fuller venues and shared usage data. STF gets a route to grow participation and spot local talent.',vs2:'4',vl2:'parties who gain: residents, visitors, RCU and STF',
+vq3:'How does it improve quality of life in AlUla?',va3:'It makes weekly play easy to book, adds an invite to a friend, opens junior academies and a route to national programmes, and supports community events. Programmes cover all ages and levels.',vs3:'120',vl3:'proposed academy places in the first season',
+vq4:'What is the economic impact?',va4:'AlUla aims to add a cumulative SAR 120 billion to GDP and create about 40,000 jobs by 2035, with 1 million visitors a year by 2030. Court Connect adds court rental, local coaching income, equipment services and more visitor activity.',vs4:'≈ SAR 1.2M',vl4:'illustrative yearly revenue at 8 courts and 60% occupancy, on sample prices. To be validated.',
+v_src:'Sources: Saudipedia (Quality of Life Program); Arab News, 12 May 2024; Skift, 23 June 2026. The revenue figure is our illustration on sample prices, not a forecast.',
 foot1:'Designed and built by Jana Khalid Aldughaim.',foot2:'Concept prototype for discussion only. Not an official website of the Royal Commission for AlUla or the Saudi Tennis Federation. Neighbourhood names are real; all courts, coaches, academies, prices and availability are sample data.',
 inv:(o)=>`Tennis? ${o.v}, ${o.c}, ${o.d} at ${o.t} (${o.u}). ${o.cost}Join me and I’ll book it.`,inv_cost:(x)=>`Court fee about SAR ${x} each. `,inv_tail:'(Sample invite from the Court Connect AlUla prototype.)'
 },ar:{
 nav_book:'الحجز',nav_acad:'الأكاديميات',nav_frame:'الشراكة',nav_road:'خارطة الطريق',nav_kpi:'المؤشرات',nav_op:'نموذج التشغيل',book_btn:'احجز ملعب',
-eyebrow:'الهيئة الملكية لمحافظة العلا × الاتحاد السعودي للتنس · مقترح شراكة',h1:'ملعبك ومدربك ولعبتك. كلها في العلا.',
+eyebrow:'الهيئة الملكية لمحافظة العلا × الاتحاد السعودي للتنس · مقترح شراكة',h1:'ملعبك ومدربك <em class="glow">ولعبتك.</em> كلها في العلا.',
 sub:'صفحة حجز واحدة للسكان والزوار: ملاعب العلا والمدربون والمعدات عند مكتب الملعب وأكاديميات الناشئين، مع طريقة سهلة لدعوة من تلعب معه.',
 cta1:'احجز جلسة',cta2:'ابحث عن أكاديمية',s1:'مواقع مقترحة في أحياء العلا',s2:'تدريب مقترح أن يقوده مدربون معتمدون من الاتحاد',s3:'قبل جلستك تكون المعدات جاهزة عند مكتب الملعب',s4:'نوعان من الأسطح في النموذج: ترابي وصلب',
 bk_eyebrow:'نموذج الحجز',bk_h2:'احجز جلستك',bk_p:'اختر الموقع والمدرب أو صديقاً تلعب معه ثم الوقت. الملاعب والمدربون والأسعار والمواعيد المعروضة هنا بيانات تجريبية.',
@@ -441,7 +597,14 @@ pilot:'سبب اختيار هذين الحيّين (مقترح): البلدة ا
 kp_eyebrow:'مؤشرات الأداء',kp_h2:'كيف يمكن قياس النجاح.',kp_p:'أهداف تقديرية للنقاش. تُحدد الأهداف النهائية بالاتفاق مع الطرفين.',
 k1_h:'نسبة الإشغال',k1_p:'إشغال الملاعب في الأوقات الهادئة. والهدف في أوقات الذروة 85%.',k2_h:'التسجيل في الأكاديميات',k2_p:'المقاعد المشغولة للناشئين والكبار في أول موسم كامل.',k3_h:'الشباب المحليون',k3_p:'نسبة مقاعد الناشئين التي يشغلها سكان العلا.',k4_h:'التجربة',k4_p:'متوسط رضا اللاعبين والزوار.',
 op_eyebrow:'المفهوم التشغيلي',op_h2:'نموذج التشغيل المقترح',op_p1:'تعمل كورت كونكت كطبقة حجز رقمية فقط. وتُشغَّل المواقع وتُصان من الهيئة أو جهات تشغيل مخصصة، وتُنسَّق برامج التدريب واعتماد الكوادر مع الاتحاد السعودي للتنس.',op_p2:'يمكن أن تبدأ المعدات من نقاط استلام صغيرة في الملاعب المشاركة، ثم يُضاف التوصيل إلى مكتب الملعب حسب الطلب.',op_fine:'هذا هيكل مقترح للتقييم وليس ترتيبًا معتمدًا.',
-foot1:'تصميم وتنفيذ جنى خالد الدغيم.',foot2:'نموذج مبدئي للنقاش فقط. ليس موقعًا رسميًا للهيئة الملكية لمحافظة العلا ولا للاتحاد السعودي للتنس. أسماء الأحياء حقيقية، أما الملاعب والمدربون والأكاديميات والأسعار والمواعيد فبيانات تجريبية.',
+nav_vis:'الرؤية',
+v_eyebrow:'رؤيتنا',v_h2:'لماذا نبني كورت كونكت العلا',v_p:'أربعة أسئلة يجيب عنها هذا المقترح.',
+vq1:'لماذا نقوم بهذا المشروع؟',va1:'الرياضة أولوية وطنية لجودة الحياة، والعلا تتحول إلى وجهة على مدار العام. التنس يحتاج لاعبين وملعباً ومدرباً ومعدات، وكورت كونكت تجعلها حجزاً واحداً.',vs1:'40%',vl1:'هدف الممارسة الرياضية الأسبوعية بحلول 2030 (برنامج جودة الحياة)',
+vq2:'ما القيمة؟',va2:'يحصل السكان على حجز سهل للعائلات والناشئين والكبار. ويحصل الزوار على نشاط جديد مع معدات جاهزة عند مكتب الملعب. وتحصل الهيئة على استخدام أكبر للمواقع وبيانات مشتركة. ويحصل الاتحاد على طريق لزيادة المشاركة واكتشاف المواهب المحلية.',vs2:'4',vl2:'أطراف مستفيدة: السكان والزوار والهيئة والاتحاد',
+vq3:'كيف تحسّن جودة الحياة في العلا؟',va3:'تسهّل حجز اللعب الأسبوعي، وتضيف دعوة لصديق، وتفتح أكاديميات للناشئين ومساراً نحو البرامج الوطنية، وتدعم الفعاليات المجتمعية. والبرامج تشمل كل الأعمار والمستويات.',vs3:'120',vl3:'مقعد أكاديمية مقترح في الموسم الأول',
+vq4:'ما الأثر الاقتصادي؟',va4:'تستهدف العلا إضافة 120 مليار ريال تراكمياً إلى الناتج المحلي وإيجاد نحو 40 ألف وظيفة بحلول 2035، ومليون زائر سنوياً بحلول 2030. وتضيف كورت كونكت إيجار الملاعب ودخل المدربين المحليين وخدمات المعدات ونشاطاً أكبر للزوار.',vs4:'≈ 1.2 مليون ريال',vl4:'إيراد سنوي توضيحي عند 8 ملاعب وإشغال 60% بأسعار تجريبية. يحتاج إلى تحقق.',
+v_src:'المصادر: سعودي بيديا (برنامج جودة الحياة)؛ عرب نيوز، 12 مايو 2024؛ سكيفت، 23 يونيو 2026. رقم الإيراد توضيحي على أسعار تجريبية وليس توقعاً.',
+foot1:'تصميم وتنفيذ جنا خالد الدغيم.',foot2:'نموذج مبدئي للنقاش فقط. ليس موقعًا رسميًا للهيئة الملكية لمحافظة العلا ولا للاتحاد السعودي للتنس. أسماء الأحياء حقيقية، أما الملاعب والمدربون والأكاديميات والأسعار والمواعيد فبيانات تجريبية.',
 inv:(o)=>`تنس؟ ${o.v}، ${o.c}، ${o.d} الساعة ${o.t} (${o.u}). ${o.cost}انضم لي وأنا أحجز.`,inv_cost:(x)=>`رسوم الملعب تقريبًا ${x} ريال لكل لاعب. `,inv_tail:'(دعوة تجريبية من نموذج كورت كونكت العلا.)'
 }};
 let lang='en';
@@ -572,7 +735,7 @@ function renderAll(){renderVenues();renderCoaches();renderCal();renderProfile();
 
 function applyLang(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
-  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('[data-t]').forEach(e=>{if(e.hasAttribute('data-html'))e.innerHTML=t(e.dataset.t);else e.textContent=t(e.dataset.t)});
   $('#l-en').setAttribute('aria-pressed',lang==='en');$('#l-ar').setAttribute('aria-pressed',lang==='ar');
   renderAll();
 }
@@ -605,7 +768,7 @@ $('#copyInvite').addEventListener('click',()=>{
   try{navigator.clipboard.writeText(txt).then(()=>{$('#inviteNote').textContent=t('f_copied')},fb)}catch(_){fb()}
 });
 
-$('#heroScene').innerHTML=scene('gold',7,'hard',1600,900);
+$('#heroScene').innerHTML=stillLife(800,1000);
 applyLang();
 </script>
 
