@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Court Connect AlUla</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+/* Layout: dark sandstone page, full-bleed scene hero, booking wizard beside a sticky summary, then proposal sections. */
+:root{
+  --bg:#17110d;
+  --surface:#221a14;
+  --surface-2:#2c221a;
+  --line:#3d3025;
+  --fg:#f1e6d3;
+  --muted:#b5a38b;
+  --accent:#c6ea4b;
+  --accent-ink:#1b2208;
+  --warn:#e8a15a;
+  --serif:'Instrument Serif','Times New Roman',serif;
+  --sans:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+:root[lang="ar"]{--serif:'IBM Plex Sans Arabic','DM Sans',system-ui,sans-serif;--sans:'IBM Plex Sans Arabic','DM Sans',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55;padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1.05;margin:0;text-wrap:balance}
+:root[lang="ar"] h1,:root[lang="ar"] h2,:root[lang="ar"] h3{font-weight:700;line-height:1.3}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin-inline:auto}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:500}
+:root[lang="ar"] .eyebrow{letter-spacing:0;font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:transparent;padding:12px 20px;border-radius:999px;font-weight:500;text-decoration:none;min-height:44px}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.btn.primary:disabled{opacity:.4;cursor:not-allowed}
+.btn.small{padding:8px 14px;min-height:38px;font-size:14px}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+.top-in{display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:24px;text-decoration:none;margin-inline-end:auto}
+.logo i{width:26px;height:26px;border-radius:50%;background:var(--accent);display:inline-block;position:relative}
+.logo i::after{content:"";position:absolute;inset:3px;border:2px solid var(--accent-ink);border-radius:50%;clip-path:polygon(0 0,50% 0,50% 100%,0 100%);transform:rotate(25deg)}
+nav.links{display:flex;gap:20px;font-size:14px;color:var(--muted)}
+nav.links a{text-decoration:none;white-space:nowrap}
+nav.links a:hover{color:var(--fg)}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;padding:7px 12px;font-size:13px;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--surface-2);color:var(--fg)}
+@media (max-width:860px){nav.links{order:5;width:100%;overflow-x:auto;padding-bottom:6px}}
+
+/* hero */
+.hero{position:relative;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));border-bottom:1px solid var(--line);overflow:hidden}
+.hero .scene{position:absolute;inset:0}
+.hero .scene svg{width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(23,17,13,.35),rgba(23,17,13,.15) 40%,rgba(23,17,13,.88));pointer-events:none}
+.hero-in{position:relative;z-index:2;padding-block:clamp(64px,12vw,150px) 36px;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.hero h1{font-size:clamp(44px,8vw,96px);max-width:12ch;margin-block:14px 18px}
+:root[lang="ar"] .hero h1{font-size:clamp(34px,6vw,68px);max-width:16ch}
+.hero p.sub{max-width:52ch;font-size:18px;color:#e5d6bd;margin-bottom:26px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:48px;border-radius:14px;overflow:hidden}
+.stats div{background:rgba(23,17,13,.82);padding:16px 18px;font-size:14px;color:#e5d6bd}
+.stats b{display:block;font-family:var(--serif);font-size:28px;color:var(--fg);font-weight:400}
+
+section{padding-block:clamp(56px,8vw,96px)}
+section h2{font-size:clamp(34px,5vw,56px);margin-block:8px 10px}
+:root[lang="ar"] section h2{font-size:clamp(28px,4vw,42px)}
+.lede{color:var(--muted);max-width:60ch;margin-bottom:34px}
+
+/* booking */
+.book{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start}
+@media (max-width:960px){.book{grid-template-columns:minmax(0,1fr)}}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:16px}
+.step h3{font-size:26px;margin-bottom:16px;display:flex;gap:12px;align-items:baseline}
+:root[lang="ar"] .step h3{font-size:20px}
+.step h3 span{font-family:var(--sans);font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:1px 9px}
+.lbl{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-block:16px 8px;display:block}
+:root[lang="ar"] .lbl{letter-spacing:0;font-size:13px}
+.lbl:first-of-type{margin-top:0}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.opt{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-align:start;min-width:0;display:flex;flex-direction:column;gap:2px}
+.opt small{color:var(--muted);font-size:13px}
+.opt[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.venue{padding:0;overflow:hidden}
+.venue .ph{aspect-ratio:16/10;display:block;width:100%}
+.venue .ph svg{width:100%;height:100%;display:block}
+.venue div.tx{padding:10px 14px 12px;display:flex;flex-direction:column}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:420px}
+.cal .dow{font-size:11px;color:var(--muted);text-align:center}
+.cal button{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);font-variant-numeric:tabular-nums;min-width:0}
+.cal button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.cal button:disabled{opacity:.25;cursor:not-allowed}
+.times{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+.times .opt{align-items:center;font-variant-numeric:tabular-nums}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg .opt{padding:9px 16px;border-radius:999px;flex-direction:row}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+input[type=text],input[type=tel],textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--fg);font:inherit;min-height:44px}
+textarea{resize:vertical;min-height:96px;line-height:1.5}
+.friend{margin-top:16px;border:1px dashed var(--accent);border-radius:14px;padding:16px;background:color-mix(in srgb,var(--accent) 6%,var(--surface-2))}
+.friend h4{margin:0 0 4px;font-size:16px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.row>*{flex:1 1 160px;min-width:0}
+.check{display:flex;gap:10px;align-items:center;margin-top:12px;font-size:14px}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+
+.summary{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px}
+@media (max-width:960px){.summary{position:static}}
+.summary h3{font-size:26px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.badge{font-family:var(--sans);font-size:11px;letter-spacing:.1em;border:1px solid var(--warn);color:var(--warn);padding:2px 9px;border-radius:999px}
+dl{margin:16px 0;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px}
+dt{color:var(--muted)}
+dd{margin:0;text-align:end;min-width:0;overflow-wrap:anywhere}
+.total{border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;font-size:15px}
+.total b{font-family:var(--serif);font-size:38px;font-weight:400;color:var(--accent);font-variant-numeric:tabular-nums}
+.each{text-align:end;color:var(--muted);font-size:13px;margin-top:2px}
+.missing{font-size:13px;color:var(--warn);margin:14px 0 0;padding:0;list-style:none}
+.missing li::before{content:"· "}
+.summary .btn{width:100%;margin-top:16px}
+.done{border-color:var(--accent)}
+.done h3{color:var(--accent)}
+.kit{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:14px;margin-block:14px}
+
+/* academies */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.chips button{border:1px solid var(--line);background:none;border-radius:999px;padding:8px 16px;font-size:14px;color:var(--muted)}
+.chips button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.cards{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;min-width:0}
+.card .ph{aspect-ratio:16/10}
+.card .ph svg{width:100%;height:100%;display:block}
+.card .tx{padding:16px 18px 20px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:26px}
+:root[lang="ar"] .card h3{font-size:19px}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px}
+.card .meta span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.card p{font-size:14px;color:var(--muted)}
+.card .price{color:var(--fg);font-weight:500;margin-top:4px}
+
+/* proposal */
+.three{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px;min-width:0}
+.panel .tag{display:inline-block;font-size:12px;letter-spacing:.1em;color:var(--accent-ink);background:var(--accent);padding:2px 10px;border-radius:6px;font-weight:700;margin-bottom:12px}
+.panel h3{font-size:28px;margin-bottom:12px}
+:root[lang="ar"] .panel h3{font-size:20px}
+ul.pl{margin:0;padding-inline-start:18px;display:grid;gap:8px;color:#dccdb5;font-size:15px}
+.fine{font-size:13px;color:var(--muted);margin-top:16px}
+.pilot{margin-top:18px;border-inline-start:3px solid var(--accent);padding:6px 16px;color:#dccdb5;font-size:15px;max-width:70ch}
+.dur{font-size:13px;color:var(--warn);margin-bottom:10px;display:block}
+.kpis{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.kpi{border-top:2px solid var(--accent);padding-top:14px}
+.kpi b{display:block;font-family:var(--serif);font-size:44px;font-weight:400;font-variant-numeric:tabular-nums}
+.kpi h3{font-size:22px;margin-bottom:6px}
+:root[lang="ar"] .kpi h3{font-size:18px}
+.kpi p{font-size:14px;color:var(--muted)}
+.opmodel{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+footer{border-top:1px solid var(--line);padding-block:36px calc(36px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:13px;display:grid;gap:8px}
+footer b{color:var(--fg);font-family:var(--serif);font-size:22px;font-weight:400}
+@media (prefers-reduced-motion:no-preference){.opt,.btn{transition:border-color .15s,background .15s}}
+</style>
+
+<header class="top"><div class="wrap top-in">
+  <a class="logo" href="#top"><i></i>Court Connect AlUla</a>
+  <nav class="links">
+    <a href="#booking" data-t="nav_book"></a><a href="#academies" data-t="nav_acad"></a><a href="#partnership" data-t="nav_frame"></a><a href="#roadmap" data-t="nav_road"></a><a href="#metrics" data-t="nav_kpi"></a><a href="#operating" data-t="nav_op"></a>
+  </nav>
+  <div class="lang" role="group" aria-label="Language"><button id="l-en" aria-pressed="true">EN</button><button id="l-ar" aria-pressed="false">العربية</button></div>
+  <a class="btn primary small" href="#booking" data-t="book_btn"></a>
+</div></header>
+
+<div class="hero" id="top">
+  <div class="scene" id="heroScene"></div>
+  <div class="wrap hero-in">
+    <span class="eyebrow" data-t="eyebrow"></span>
+    <h1 data-t="h1"></h1>
+    <p class="sub" data-t="sub"></p>
+    <div class="cta"><a class="btn primary" href="#booking" data-t="cta1"></a><a class="btn" href="#academies" data-t="cta2"></a></div>
+    <div class="stats">
+      <div><b>4</b><span data-t="s1"></span></div>
+      <div><b>STF</b><span data-t="s2"></span></div>
+      <div><b>15′</b><span data-t="s3"></span></div>
+      <div><b>2</b><span data-t="s4"></span></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+<section id="booking">
+  <span class="eyebrow" data-t="bk_eyebrow"></span>
+  <h2 data-t="bk_h2"></h2>
+  <p class="lede" data-t="bk_p"></p>
+  <div class="book">
+    <div>
+      <div class="step"><h3><span>1</span><em style="font-style:normal" data-t="st1"></em></h3>
+        <span class="lbl" data-t="l_venue"></span><div class="grid" id="venues"></div>
+        <span class="lbl" data-t="l_court"></span><div class="grid" id="courts"></div>
+      </div>
+      <div class="step"><h3><span>2</span><em style="font-style:normal" data-t="st2"></em></h3>
+        <div class="grid" id="coaches"></div>
+        <div class="friend" id="friendBox" hidden>
+          <h4 data-t="f_h"></h4>
+          <p class="note" style="margin:0 0 4px" data-t="f_p"></p>
+          <div class="row">
+            <div><span class="lbl" style="margin-top:8px" data-t="f_name"></span><input type="text" id="friendName" autocomplete="off"></div>
+            <div><span class="lbl" style="margin-top:8px" data-t="f_phone"></span><input type="tel" id="friendPhone" inputmode="tel" autocomplete="off"></div>
+          </div>
+          <label class="check"><input type="checkbox" id="split" checked><span data-t="f_split"></span></label>
+          <span class="lbl" data-t="f_msg"></span>
+          <textarea id="inviteText" readonly></textarea>
+          <div class="row" style="margin-top:10px">
+            <button class="btn small" id="copyInvite" type="button" data-t="f_copy"></button>
+            <a class="btn small" id="waInvite" href="#" target="_blank" rel="noopener" data-t="f_wa"></a>
+          </div>
+          <p class="note" id="inviteNote"></p>
+        </div>
+      </div>
+      <div class="step"><h3><span>3</span><em style="font-style:normal" data-t="st3"></em></h3>
+        <span class="lbl" data-t="l_date"></span><div class="cal" id="cal"></div>
+        <span class="lbl" data-t="l_dur"></span><div class="seg" id="durs"></div>
+        <span class="lbl" data-t="l_time"></span><div class="grid times" id="times"></div>
+        <p class="note" data-t="n_grey"></p>
+      </div>
+      <div class="step"><h3><span>4</span><em style="font-style:normal" data-t="st4"></em></h3>
+        <span class="lbl" data-t="l_age"></span><div class="seg" id="ages"></div>
+        <div id="guardBox" hidden><span class="lbl" data-t="l_guard"></span><input type="text" id="guardian" autocomplete="off"></div>
+        <span class="lbl" data-t="l_level"></span><div class="seg" id="levels"></div>
+      </div>
+      <div class="step"><h3><span>5</span><em style="font-style:normal" data-t="st5"></em></h3>
+        <div class="grid" id="equip"></div>
+      </div>
+    </div>
+
+    <aside class="summary" id="summary" aria-live="polite">
+      <div id="sumForm">
+        <h3><span data-t="sum_h"></span><span class="badge" data-t="demo"></span></h3>
+        <span class="lbl" data-t="l_player"></span>
+        <input type="text" id="player" autocomplete="off">
+        <dl id="sumList"></dl>
+        <div class="total"><span data-t="total"></span><b id="totalVal">SAR 0</b></div>
+        <div class="each" id="eachVal"></div>
+        <ul class="missing" id="missing"></ul>
+        <button class="btn primary" id="confirm" type="button" data-t="confirm"></button>
+        <p class="note" data-t="demo_note"></p>
+      </div>
+      <div id="sumDone" hidden>
+        <h3 data-t="done_h"></h3>
+        <p class="note" id="refLine" style="margin-top:6px"></p>
+        <dl id="doneList"></dl>
+        <div class="kit" id="doneKit"></div>
+        <p class="note" data-t="done_notice"></p>
+        <button class="btn" id="again" type="button" data-t="again"></button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="academies" style="border-top:1px solid var(--line)">
+  <span class="eyebrow" data-t="ac_eyebrow"></span>
+  <h2 data-t="ac_h2"></h2>
+  <p class="lede" data-t="ac_p"></p>
+  <div class="chips" id="acFilters"></div>
+  <div class="cards" id="acCards"></div>
+</section>
+
+<section id="partnership" style="border-top:1px solid var(--line)">
+  <span class="eyebrow" data-t="fw_eyebrow"></span>
+  <h2 data-t="fw_h2"></h2>
+  <p class="lede" data-t="fw_p"></p>
+  <div class="three">
+    <div class="panel"><span class="tag">RCU</span><h3 data-t="rcu_h"></h3><ul class="pl"><li data-t="rcu1"></li><li data-t="rcu2"></li><li data-t="rcu3"></li></ul></div>
+    <div class="panel"><span class="tag">STF</span><h3 data-t="stf_h"></h3><ul class="pl"><li data-t="stf1"></li><li data-t="stf2"></li><li data-t="stf3"></li></ul></div>
+    <div class="panel"><span class="tag">CC</span><h3 data-t="cc_h"></h3><ul class="pl"><li data-t="cc1"></li><li data-t="cc2"></li><li data-t="cc3"></li></ul></div>
+  </div>
+  <p class="fine" data-t="fw_fine"></p>
+</section>
+
+<section id="roadmap" style="border-top:1px solid var(--line)">
+  <span class="eyebrow" data-t="rm_eyebrow"></span>
+  <h2 data-t="rm_h2"></h2>
+  <p class="lede" data-t="rm_p"></p>
+  <div class="three">
+    <div class="panel"><span class="dur" data-t="p1_d"></span><h3 data-t="p1_h"></h3><ul class="pl"><li data-t="p1a"></li><li data-t="p1b"></li><li data-t="p1c"></li><li data-t="p1d"></li><li data-t="p1e"></li></ul></div>
+    <div class="panel"><span class="dur" data-t="p2_d"></span><h3 data-t="p2_h"></h3><ul class="pl"><li data-t="p2a"></li><li data-t="p2b"></li><li data-t="p2c"></li><li data-t="p2d"></li></ul></div>
+    <div class="panel"><span class="dur" data-t="p3_d"></span><h3 data-t="p3_h"></h3><ul class="pl"><li data-t="p3a"></li><li data-t="p3b"></li><li data-t="p3c"></li><li data-t="p3d"></li></ul></div>
+  </div>
+  <p class="pilot" data-t="pilot"></p>
+</section>
+
+<section id="metrics" style="border-top:1px solid var(--line)">
+  <span class="eyebrow" data-t="kp_eyebrow"></span>
+  <h2 data-t="kp_h2"></h2>
+  <p class="lede" data-t="kp_p"></p>
+  <div class="kpis">
+    <div class="kpi"><b>60%</b><h3 data-t="k1_h"></h3><p data-t="k1_p"></p></div>
+    <div class="kpi"><b>120</b><h3 data-t="k2_h"></h3><p data-t="k2_p"></p></div>
+    <div class="kpi"><b>40%</b><h3 data-t="k3_h"></h3><p data-t="k3_p"></p></div>
+    <div class="kpi"><b>4.5/5</b><h3 data-t="k4_h"></h3><p data-t="k4_p"></p></div>
+  </div>
+</section>
+
+<section id="operating" style="border-top:1px solid var(--line)">
+  <div class="opmodel">
+    <div><span class="eyebrow" data-t="op_eyebrow"></span><h2 data-t="op_h2"></h2></div>
+    <div><p data-t="op_p1" style="margin-bottom:14px"></p><p data-t="op_p2" style="margin-bottom:14px"></p><p class="fine" data-t="op_fine"></p></div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap"><b>Court Connect AlUla</b><span data-t="foot1"></span><span data-t="foot2"></span></footer>
+
+<script>
+/* ---------- Scene generator: layered sandstone mesas, light and a court in perspective, with film grain ---------- */
+let sid=0;
+function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const MOODS={
+  gold:{sky:['#2a2a3d','#b4683c','#f3bb72'],sun:'#ffe2ad',sx:.68,sy:.46,a:'#9b5733',b:'#6a3822',c:'#46261a',ground:'#2f1d14'},
+  dawn:{sky:['#3b4764','#c58f86','#f4d4a6'],sun:'#fff0d0',sx:.3,sy:.5,a:'#a76b52',b:'#7a4a3a',c:'#4f3027',ground:'#34211a'},
+  dusk:{sky:['#161830','#7b3a4c','#e58b52'],sun:'#ffb06a',sx:.8,sy:.55,a:'#6e3a30',b:'#4a2824',c:'#2f1a1a',ground:'#24150f'},
+  noon:{sky:['#5f96bf','#9cc2d4','#ecdfc0'],sun:'#fffbe8',sx:.5,sy:.2,a:'#b97b4c',b:'#8c5736',c:'#5e3a26',ground:'#3d2a1d'}
+};
+function mesaPath(r,W,H,base,minH,maxH){
+  let x=-20,h=minH+(maxH-minH)*r(),pts=[[x,base]];
+  pts.push([x,base-h]);
+  while(x<W+40){x+=60+r()*160;pts.push([x,base-h]);h=Math.max(minH,Math.min(maxH,h+(r()-.5)*(maxH-minH)*.9));pts.push([x,base-h]);if(r()<.35){x+=10+r()*30;pts.push([x,base-h-r()*8])}}
+  pts.push([x,base]);
+  return pts.map(p=>p[0].toFixed(0)+','+p[1].toFixed(0)).join(' ');
+}
+function scene(mood,seed,court,W,H){
+  const m=MOODS[mood],r=rng(seed*977+13),id='s'+(sid++);
+  const hz=H*.62;
+  const fl=[.34,.66],nl=[.04,.96],fy=H*.76,ny=H*1.04;
+  const P=(u,v)=>{const t=v*v*.55+v*.45;const l=fl[0]+(nl[0]-fl[0])*t,rr=fl[1]+(nl[1]-fl[1])*t;return[(l+(rr-l)*u)*W,fy+(ny-fy)*t]};
+  const L=(u1,v1,u2,v2,w)=>{const a=P(u1,v1),b=P(u2,v2);return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#f4efe4" stroke-width="${w}" stroke-opacity=".9"/>`};
+  const poly=(pts)=>pts.map(p=>P(p[0],p[1]).map(n=>n.toFixed(1)).join(',')).join(' ');
+  const surf=court==='clay'?'#b0502e':'#3d6e76';
+  const apron=court==='clay'?'#8f3f24':'#7a4636';
+  const na=P(0,.5),nb=P(1,.5),sw=Math.max(3,H*.006);
+  const dark=mood==='dusk';
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tennis court in AlUla sandstone landscape">
+<defs>
+<linearGradient id="${id}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m.sky[0]}"/><stop offset=".55" stop-color="${m.sky[1]}"/><stop offset="1" stop-color="${m.sky[2]}"/></linearGradient>
+<radialGradient id="${id}s" cx="${m.sx}" cy="${m.sy}" r=".55"><stop offset="0" stop-color="${m.sun}" stop-opacity=".95"/><stop offset=".25" stop-color="${m.sun}" stop-opacity=".35"/><stop offset="1" stop-color="${m.sun}" stop-opacity="0"/></radialGradient>
+<pattern id="${id}p" width="10" height="16" patternUnits="userSpaceOnUse"><rect width="10" height="2" y="3" fill="#000" opacity=".16"/><rect width="10" height="1" y="11" fill="#fff" opacity=".07"/></pattern>
+<linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${m.b}"/><stop offset="1" stop-color="${m.ground}"/></linearGradient>
+<radialGradient id="${id}v" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
+<filter id="${id}n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="${seed}"/><feColorMatrix values="0 0 0 0 .5  0 0 0 0 .45  0 0 0 0 .4  0 0 0 .55 -.1"/></filter>
+<filter id="${id}b"><feGaussianBlur stdDeviation="${(W/500).toFixed(1)}"/></filter>
+</defs>
+<rect width="${W}" height="${H}" fill="url(#${id}k)"/>
+<rect width="${W}" height="${H}" fill="url(#${id}s)"/>
+<g filter="url(#${id}b)" opacity=".9"><polygon points="${mesaPath(r,W,H,hz,H*.1,H*.2)}" fill="${m.a}" opacity=".55"/></g>
+<polygon points="${mesaPath(r,W,H,hz+H*.04,H*.14,H*.3)}" fill="${m.a}"/><polygon points="${mesaPath(r,W,H,hz+H*.04,H*.14,H*.3)}" fill="url(#${id}p)"/>
+<polygon points="${mesaPath(r,W,H,hz+H*.09,H*.1,H*.22)}" fill="${m.b}"/>
+<rect y="${hz}" width="${W}" height="${H-hz}" fill="url(#${id}f)"/>
+<polygon points="${poly([[-.18,-.08],[1.18,-.08],[1.2,1.05],[-.2,1.05]])}" fill="${apron}"/>
+<polygon points="${poly([[0,0],[1,0],[1,1],[0,1]])}" fill="${surf}"/>
+<polygon points="${poly([[0,0],[1,0],[1,1],[0,1]])}" fill="url(#${id}p)" opacity=".5"/>
+${L(0,0,1,0,sw*.7)}${L(1,0,1,1,sw)}${L(1,1,0,1,sw*1.3)}${L(0,1,0,0,sw)}
+${L(.12,0,.12,1,sw*.8)}${L(.88,0,.88,1,sw*.8)}${L(.12,.24,.88,.24,sw*.7)}${L(.12,.76,.88,.76,sw*.9)}${L(.5,.24,.5,.76,sw*.7)}
+<line x1="${(na[0]-W*.02).toFixed(1)}" y1="${na[1].toFixed(1)}" x2="${(nb[0]+W*.02).toFixed(1)}" y2="${nb[1].toFixed(1)}" stroke="#111" stroke-width="${sw*4}" stroke-opacity=".8"/>
+<line x1="${na[0].toFixed(1)}" y1="${(na[1]-sw*2.2).toFixed(1)}" x2="${nb[0].toFixed(1)}" y2="${(nb[1]-sw*2.2).toFixed(1)}" stroke="#f4efe4" stroke-width="${sw*1.2}"/>
+<rect x="${(na[0]-W*.02).toFixed(1)}" y="${(na[1]-sw*7).toFixed(1)}" width="${sw*1.6}" height="${sw*8}" fill="#222"/><rect x="${(nb[0]+W*.02-sw*1.6).toFixed(1)}" y="${(nb[1]-sw*7).toFixed(1)}" width="${sw*1.6}" height="${sw*8}" fill="#222"/>
+<rect width="${W}" height="${H}" fill="url(#${id}v)"/>
+<rect width="${W}" height="${H}" filter="url(#${id}n)" opacity="${dark?.5:.38}" style="mix-blend-mode:overlay"/>
+</svg>`;
+}
+
+/* ---------- Text ---------- */
+const T={en:{
+nav_book:'Book',nav_acad:'Academies',nav_frame:'Partnership',nav_road:'Roadmap',nav_kpi:'Metrics',nav_op:'Operating model',book_btn:'Book court',
+eyebrow:'RCU × Saudi Tennis Federation · Partnership proposal',h1:'Your court, your coach, your game. All in AlUla.',
+sub:'One booking page for residents and visitors: AlUla courts, coaches, gear at the court desk, junior academies, and an easy way to invite whoever you play with.',
+cta1:'Book a session',cta2:'Find an academy',s1:'proposed venues in AlUla neighbourhoods',s2:'coaching, proposed to be led by STF-certified coaches',s3:'before your session, gear ready at the court desk',s4:'surfaces in the sample: clay and hard court',
+bk_eyebrow:'Booking prototype',bk_h2:'Reserve your session',bk_p:'Pick a venue, a coach or a friend to play with, then a time. Courts, coaches, prices and availability shown here are sample data.',
+st1:'Venue and court',st2:'Coach or a friend',st3:'Date, duration and time',st4:'Player profile',st5:'Tennis equipment',
+l_venue:'Neighbourhood',l_court:'Court',l_date:'Select date (November 2026)',l_dur:'Session duration',l_time:'Available start time',n_grey:'Greyed-out times are taken for this court, date and coach.',
+l_age:'Player age',u18:'Under 18',o18:'18 or older',l_guard:'Guardian name and phone (required under 18)',l_level:'Skill level',beg:'Beginner',int:'Intermediate',adv:'Advanced',
+d1:'1 hour',d15:'1.5 hours',d2:'2 hours',
+f_h:'Invite a friend',f_p:'Tennis takes two. Send your friend the details so they can join and share the court fee.',f_name:'Friend’s name (optional)',f_phone:'Friend’s phone (optional)',f_split:'Split the cost between two players',f_msg:'Invite message',f_copy:'Copy invite',f_wa:'Open in WhatsApp',
+f_note:'The invite is not sent from this page. Copy it, or open WhatsApp and send it yourself.',f_copied:'Copied. Paste it into any chat.',f_copyfail:'Select the text above and copy it.',f_pick:'Pick a venue, date and time and your invite text will fill in here.',
+coach_friend:'Play with a friend',coach_friend_s:'No coach. Invite a friend',
+eq_own:'My own gear',eq_own_s:'No charge',eq_court:'Provided at court',eq_court_s:'Racket and balls, SAR 40',eq_del:'Delivered to court',eq_del_s:'Brought to the desk, SAR 60',
+sum_h:'Booking summary',demo:'DEMO',l_player:'Player name *',total:'Total',confirm:'Confirm booking',demo_note:'Demonstration only. No payment is collected and nothing is reserved.',
+r_venue:'Neighbourhood',r_court:'Court',r_coach:'Coach',r_date:'Date',r_time:'Time slot',r_player:'Player level',r_equip:'Equipment',r_cr:'Court rental',r_cf:'Coaching fee',r_ef:'Equipment fee',r_partner:'Friend',
+need:'Still needed:',need_time:'Choose a start time',need_name:'Enter the player name',need_guard:'Enter guardian details',each:'per player',
+done_h:'You are booked in',ref:'Reference',done_notice:'Demonstration booking. No real reservation was made and no payment was taken.',again:'Plan another session',
+kit_del:'Your kit would be prepared and delivered to the court desk 15 minutes before your session.',kit_court:'Racket and balls would be waiting at the court desk.',kit_own:'You are bringing your own gear.',
+ac_eyebrow:'Youth and adult programmes',ac_h2:'Tennis academies in AlUla',ac_p:'Sample programmes showing how structured training could sit beside open court booking.',
+fAll:'All',fKids:'Kids',fAdults:'Adults',fBeg:'Beginners',fAdv:'Advanced',
+fw_eyebrow:'Partnership framework',fw_h2:'Two organisations, one booking page.',fw_p:'AlUla’s heritage settings combined with national sports development.',
+rcu_h:'Royal Commission for AlUla',rcu1:'Provide and operate participating venues, subject to final agreement.',rcu2:'Promote the service through existing visitor and destination channels.',rcu3:'Coordinate tennis with AlUla’s cultural and sports calendar.',
+stf_h:'Saudi Tennis Federation',stf1:'Provide certified coaches for all player levels.',stf2:'Develop curricula for junior development and adults.',stf3:'Connect promising local players with national pathways.',
+cc_h:'Court Connect platform',cc1:'Deliver one simple booking experience.',cc2:'Show court availability, coach matching and gear delivery as the pilot builds them.',cc3:'Give both organisations shared usage reporting.',
+fw_fine:'All roles above are proposed for evaluation and discussion, not confirmed commitments.',
+rm_eyebrow:'Implementation plan',rm_h2:'Start small, then grow.',rm_p:'A phased rollout keeps early operational risk low. Durations are indicative and open to agreement.',
+p1_d:'About 8 weeks (indicative)',p1_h:'Phase 1 · Pilot',p1a:'Test the concept in two neighbourhoods: Old Town and Al-Jadidah.',p1b:'Start with a core group of 4 certified coaches.',p1c:'Test the booking flow and on-court check-in.',p1d:'Trial equipment rental and delivery to the court desk.',p1e:'Collect player and visitor feedback.',
+p2_d:'About 6 months (indicative)',p2_h:'Phase 2 · Launch',p2a:'Expand courts to all 4 neighbourhoods.',p2b:'Open to residents and international visitors.',p2c:'Co-market through RCU and STF channels.',p2d:'Grow the coach directory and add junior academy timetables.',
+p3_d:'From year 2 (indicative)',p3_h:'Phase 3 · Grow',p3a:'Add seasonal events and exhibition matches.',p3b:'Launch junior pathway programmes for local talent.',p3c:'Host community tournaments and corporate retreats.',p3d:'Assess permanent facility expansion.',
+pilot:'Why these two neighbourhoods (proposed): Old Town draws the most visitors and Al-Jadidah is a main residential area, so together they test both audiences before the wider launch.',
+kp_eyebrow:'Key performance indicators',kp_h2:'How success could be measured.',kp_p:'Indicative targets for discussion. Final targets would be agreed with both organisations.',
+k1_h:'Utilisation',k1_p:'Court occupancy in off-peak hours. Peak-hour target of 85%.',k2_h:'Academy enrolments',k2_p:'Junior and adult places filled in the first full season.',k3_h:'Local youth',k3_p:'Share of junior places taken by AlUla residents.',k4_h:'Experience',k4_p:'Average player and visitor satisfaction rating.',
+op_eyebrow:'Operational concept',op_h2:'Proposed operating model',op_p1:'Court Connect would act only as the digital booking layer. Venues would be operated and maintained by RCU or designated venue operators, and coaching programmes and staff certification would be coordinated with the Saudi Tennis Federation.',op_p2:'Equipment could start at small collection points at participating courts, with delivery to the court desk added as demand shows it is needed.',op_fine:'This is a proposed structure for evaluation, not an approved arrangement.',
+foot1:'Designed and built by Jana Khalid Aldughaim.',foot2:'Concept prototype for discussion only. Not an official website of the Royal Commission for AlUla or the Saudi Tennis Federation. Neighbourhood names are real; all courts, coaches, academies, prices and availability are sample data.',
+inv:(o)=>`Tennis? ${o.v}, ${o.c}, ${o.d} at ${o.t} (${o.u}). ${o.cost}Join me and I’ll book it.`,inv_cost:(x)=>`Court fee about SAR ${x} each. `,inv_tail:'(Sample invite from the Court Connect AlUla prototype.)'
+},ar:{
+nav_book:'الحجز',nav_acad:'الأكاديميات',nav_frame:'الشراكة',nav_road:'خارطة الطريق',nav_kpi:'المؤشرات',nav_op:'نموذج التشغيل',book_btn:'احجز ملعب',
+eyebrow:'الهيئة الملكية لمحافظة العلا × الاتحاد السعودي للتنس · مقترح شراكة',h1:'ملعبك ومدربك ولعبتك. كلها في العلا.',
+sub:'صفحة حجز واحدة للسكان والزوار: ملاعب العلا والمدربون والمعدات عند مكتب الملعب وأكاديميات الناشئين، مع طريقة سهلة لدعوة من تلعب معه.',
+cta1:'احجز جلسة',cta2:'ابحث عن أكاديمية',s1:'مواقع مقترحة في أحياء العلا',s2:'تدريب مقترح أن يقوده مدربون معتمدون من الاتحاد',s3:'قبل جلستك تكون المعدات جاهزة عند مكتب الملعب',s4:'نوعان من الأسطح في النموذج: ترابي وصلب',
+bk_eyebrow:'نموذج الحجز',bk_h2:'احجز جلستك',bk_p:'اختر الموقع والمدرب أو صديقاً تلعب معه ثم الوقت. الملاعب والمدربون والأسعار والمواعيد المعروضة هنا بيانات تجريبية.',
+st1:'الموقع والملعب',st2:'المدرب أو صديق',st3:'التاريخ والمدة والوقت',st4:'بيانات اللاعب',st5:'معدات التنس',
+l_venue:'الحي',l_court:'الملعب',l_date:'اختر التاريخ (نوفمبر 2026)',l_dur:'مدة الجلسة',l_time:'وقت البداية المتاح',n_grey:'الأوقات الباهتة محجوزة لهذا الملعب والتاريخ والمدرب.',
+l_age:'عمر اللاعب',u18:'أقل من 18',o18:'18 أو أكثر',l_guard:'اسم ولي الأمر ورقمه (مطلوب لمن هم أقل من 18)',l_level:'مستوى المهارة',beg:'مبتدئ',int:'متوسط',adv:'متقدم',
+d1:'ساعة',d15:'ساعة ونصف',d2:'ساعتان',
+f_h:'ادعُ صديقاً',f_p:'التنس يُلعب بين اثنين. أرسل لصديقك التفاصيل لينضم ويشاركك رسوم الملعب.',f_name:'اسم الصديق (اختياري)',f_phone:'رقم الصديق (اختياري)',f_split:'قسّم التكلفة بين اللاعبين',f_msg:'رسالة الدعوة',f_copy:'انسخ الدعوة',f_wa:'افتح في واتساب',
+f_note:'الدعوة لا تُرسل من هذه الصفحة. انسخها أو افتح واتساب وأرسلها بنفسك.',f_copied:'تم النسخ. الصقها في أي محادثة.',f_copyfail:'حدد النص أعلاه وانسخه.',f_pick:'اختر الموقع والتاريخ والوقت وسيظهر نص الدعوة هنا.',
+coach_friend:'العب مع صديق',coach_friend_s:'بدون مدرب. ادعُ صديقًا',
+eq_own:'معداتي الخاصة',eq_own_s:'بدون رسوم',eq_court:'متوفرة في الملعب',eq_court_s:'مضرب وكرات، 40 ريال',eq_del:'توصيل إلى الملعب',eq_del_s:'تصل إلى المكتب، 60 ريال',
+sum_h:'ملخص الحجز',demo:'تجريبي',l_player:'اسم اللاعب *',total:'الإجمالي',confirm:'أكّد الحجز',demo_note:'للعرض فقط. لا يتم أي دفع ولا يُحجز شيء فعليًا.',
+r_venue:'الحي',r_court:'الملعب',r_coach:'المدرب',r_date:'التاريخ',r_time:'الوقت',r_player:'مستوى اللاعب',r_equip:'المعدات',r_cr:'إيجار الملعب',r_cf:'رسوم التدريب',r_ef:'رسوم المعدات',r_partner:'الصديق',
+need:'ما زال مطلوبًا:',need_time:'اختر وقت البداية',need_name:'أدخل اسم اللاعب',need_guard:'أدخل بيانات ولي الأمر',each:'للاعب',
+done_h:'تم الحجز',ref:'المرجع',done_notice:'حجز تجريبي. لم يُنشأ أي حجز فعلي ولم يتم أي دفع.',again:'خطط لجلسة أخرى',
+kit_del:'ستُجهّز معداتك وتُوصَّل إلى مكتب الملعب قبل جلستك بـ 15 دقيقة.',kit_court:'سيكون المضرب والكرات بانتظارك عند مكتب الملعب.',kit_own:'ستحضر معداتك الخاصة.',
+ac_eyebrow:'برامج للناشئين والكبار',ac_h2:'أكاديميات التنس في العلا',ac_p:'برامج تجريبية توضح كيف يمكن أن يجتمع التدريب المنظم مع الحجز المفتوح للملاعب.',
+fAll:'الكل',fKids:'أطفال',fAdults:'كبار',fBeg:'مبتدئون',fAdv:'متقدمون',
+fw_eyebrow:'إطار الشراكة',fw_h2:'جهتان، وصفحة حجز واحدة.',fw_p:'تجمع المواقع التراثية في العلا مع تطوير الرياضة على المستوى الوطني.',
+rcu_h:'الهيئة الملكية لمحافظة العلا',rcu1:'توفير المواقع المشاركة وتشغيلها، بعد الاتفاق النهائي.',rcu2:'الترويج للخدمة عبر قنوات الزوار والوجهة الحالية.',rcu3:'تنسيق التنس مع التقويم الثقافي والرياضي في العلا.',
+stf_h:'الاتحاد السعودي للتنس',stf1:'توفير مدربين معتمدين لجميع المستويات.',stf2:'تطوير مناهج للناشئين وللكبار.',stf3:'ربط اللاعبين المحليين الواعدين بالمسارات الوطنية.',
+cc_h:'منصة كورت كونكت',cc1:'تقديم تجربة حجز واحدة وسهلة.',cc2:'عرض توفر الملاعب ومطابقة المدربين وتوصيل المعدات مع تطويرها في التجربة.',cc3:'تزويد الطرفين بتقارير استخدام مشتركة.',
+fw_fine:'جميع الأدوار أعلاه مقترحة للتقييم والنقاش وليست التزامات مؤكدة.',
+rm_eyebrow:'خطة التنفيذ',rm_h2:'ابدأ صغيرًا ثم توسّع.',rm_p:'التنفيذ على مراحل يقلل المخاطر التشغيلية في البداية. المدد تقديرية وقابلة للاتفاق.',
+p1_d:'نحو 8 أسابيع (تقديري)',p1_h:'المرحلة 1 · التجربة',p1a:'اختبار الفكرة في حيّين: البلدة القديمة والجديدية.',p1b:'البدء بـ 4 مدربين معتمدين.',p1c:'اختبار مسار الحجز وتسجيل الحضور في الملعب.',p1d:'تجربة تأجير المعدات وتوصيلها إلى مكتب الملعب.',p1e:'جمع آراء اللاعبين والزوار.',
+p2_d:'نحو 6 أشهر (تقديري)',p2_h:'المرحلة 2 · الإطلاق',p2a:'التوسع إلى الأحياء الأربعة.',p2b:'الإتاحة للسكان والزوار الدوليين.',p2c:'تسويق مشترك عبر قنوات الهيئة والاتحاد.',p2d:'توسيع دليل المدربين وإضافة جداول أكاديميات الناشئين.',
+p3_d:'من السنة الثانية (تقديري)',p3_h:'المرحلة 3 · النمو',p3a:'إضافة فعاليات موسمية ومباريات استعراضية.',p3b:'إطلاق برامج مسار الناشئين للمواهب المحلية.',p3c:'استضافة بطولات مجتمعية وفعاليات للشركات.',p3d:'تقييم التوسع في منشآت دائمة.',
+pilot:'سبب اختيار هذين الحيّين (مقترح): البلدة القديمة تستقبل أكبر عدد من الزوار والجديدية من أبرز الأحياء السكنية، فيختبران معًا الفئتين قبل الإطلاق الأوسع.',
+kp_eyebrow:'مؤشرات الأداء',kp_h2:'كيف يمكن قياس النجاح.',kp_p:'أهداف تقديرية للنقاش. تُحدد الأهداف النهائية بالاتفاق مع الطرفين.',
+k1_h:'نسبة الإشغال',k1_p:'إشغال الملاعب في الأوقات الهادئة. والهدف في أوقات الذروة 85%.',k2_h:'التسجيل في الأكاديميات',k2_p:'المقاعد المشغولة للناشئين والكبار في أول موسم كامل.',k3_h:'الشباب المحليون',k3_p:'نسبة مقاعد الناشئين التي يشغلها سكان العلا.',k4_h:'التجربة',k4_p:'متوسط رضا اللاعبين والزوار.',
+op_eyebrow:'المفهوم التشغيلي',op_h2:'نموذج التشغيل المقترح',op_p1:'تعمل كورت كونكت كطبقة حجز رقمية فقط. وتُشغَّل المواقع وتُصان من الهيئة أو جهات تشغيل مخصصة، وتُنسَّق برامج التدريب واعتماد الكوادر مع الاتحاد السعودي للتنس.',op_p2:'يمكن أن تبدأ المعدات من نقاط استلام صغيرة في الملاعب المشاركة، ثم يُضاف التوصيل إلى مكتب الملعب حسب الطلب.',op_fine:'هذا هيكل مقترح للتقييم وليس ترتيبًا معتمدًا.',
+foot1:'تصميم وتنفيذ جنى خالد الدغيم.',foot2:'نموذج مبدئي للنقاش فقط. ليس موقعًا رسميًا للهيئة الملكية لمحافظة العلا ولا للاتحاد السعودي للتنس. أسماء الأحياء حقيقية، أما الملاعب والمدربون والأكاديميات والأسعار والمواعيد فبيانات تجريبية.',
+inv:(o)=>`تنس؟ ${o.v}، ${o.c}، ${o.d} الساعة ${o.t} (${o.u}). ${o.cost}انضم لي وأنا أحجز.`,inv_cost:(x)=>`رسوم الملعب تقريبًا ${x} ريال لكل لاعب. `,inv_tail:'(دعوة تجريبية من نموذج كورت كونكت العلا.)'
+}};
+let lang='en';
+const t=k=>(T[lang][k]??T.en[k]??k);
+
+/* ---------- Data (all sample) ---------- */
+const VENUES=[
+ {id:'old',en:'AlUla Old Town',ar:'البلدة القديمة',mood:'gold',courts:[{id:'c1',en:'Court 1',ar:'ملعب 1',s:'hard',rate:80},{id:'c2',en:'Court 2',ar:'ملعب 2',s:'clay',rate:110}]},
+ {id:'jad',en:'Al-Jadidah',ar:'الجديدة',mood:'dawn',courts:[{id:'c1',en:'Court 1',ar:'ملعب 1',s:'hard',rate:80},{id:'c2',en:'Court 2',ar:'ملعب 2',s:'hard',rate:80}]},
+ {id:'ash',en:'Ashar Valley',ar:'وادي عشار',mood:'dusk',courts:[{id:'c1',en:'Court 1',ar:'ملعب 1',s:'clay',rate:110},{id:'c2',en:'Court 2',ar:'ملعب 2',s:'hard',rate:90}]},
+ {id:'khu',en:'Al-Khuraybah',ar:'الخريبة',mood:'noon',courts:[{id:'c1',en:'Court 1',ar:'ملعب 1',s:'hard',rate:70},{id:'c2',en:'Court 2',ar:'ملعب 2',s:'hard',rate:70}]}
+];
+const COACHES=[
+ {id:'sul',en:'Sultan Al-Harbi',ar:'سلطان الحربي',te:'Juniors and beginners',ta:'ناشئون ومبتدئون',rate:150},
+ {id:'ree',en:'Reem Al-Anazi',ar:'ريم العنزي',te:'Match play',ta:'اللعب التنافسي',rate:150},
+ {id:'omr',en:'Omar Baeshen',ar:'عمر باعشن',te:'Fitness and footwork',ta:'اللياقة وحركة القدمين',rate:150},
+ {id:'lin',en:'Lina Fadel',ar:'لينا فاضل',te:'Adults, all levels',ta:'الكبار، كل المستويات',rate:150}
+];
+const ACAD=[
+ {en:'Little Rackets',ar:'المضارب الصغيرة',cat:['kids','beg'],age:['Ages 6–9','6–9 سنوات'],when:['Sat and Mon · 4:30 PM','السبت والاثنين · 4:30 م'],v:'old',price:'SAR 450',mood:'dawn',court:'hard',de:'Games-based introduction to rallies, balance and fun.',da:'مدخل قائم على الألعاب إلى التبادل والتوازن والمتعة.'},
+ {en:'Junior Performance',ar:'الناشئون المتقدمون',cat:['kids','adv'],age:['Ages 12–16','12–16 سنة'],when:['Sun, Tue, Thu · 5:00 PM','الأحد والثلاثاء والخميس · 5 م'],v:'ash',price:'SAR 900',mood:'dusk',court:'clay',de:'Match tactics and fitness, with a route to national events.',da:'تكتيكات المباراة واللياقة مع مسار نحو البطولات الوطنية.'},
+ {en:'Oasis Beginners',ar:'مبتدئو الواحة',cat:['adults','beg'],age:['Adults','كبار'],when:['Wed · 7:00 AM','الأربعاء · 7 ص'],v:'jad',price:'SAR 600',mood:'noon',court:'hard',de:'Six-week course covering grip, serve and basic scoring.',da:'دورة من ستة أسابيع تغطي المسكة والإرسال وأساسيات احتساب النقاط.'},
+ {en:'Sunrise Social',ar:'تنس الشروق',cat:['adults'],age:['Adults','كبار'],when:['Fri · 6:30 AM','الجمعة · 6:30 ص'],v:'khu',price:'SAR 300',mood:'dawn',court:'hard',de:'Relaxed doubles with a coach rotating between courts.',da:'زوجي مريح مع مدرب يتنقل بين الملاعب.'},
+ {en:'Advanced Clinic',ar:'ورشة المتقدمين',cat:['adults','adv'],age:['Adults','كبار'],when:['Thu · 6:00 PM','الخميس · 6 م'],v:'old',price:'SAR 750',mood:'gold',court:'clay',de:'Serve patterns and point construction for competitive players.',da:'أنماط الإرسال وبناء النقطة للاعبين التنافسيين.'}
+];
+
+/* ---------- State ---------- */
+const S={venue:'old',court:'c1',coach:'sul',date:null,dur:1,time:null,age:'adult',level:'beg',equip:'own',confirmed:false,filter:'all'};
+const TIMES=['06:00','07:00','08:00','16:00','17:00','18:00','19:00','20:00'];
+const $=s=>document.querySelector(s);
+const hs=s=>{let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))>>>0;return x};
+const V=()=>VENUES.find(v=>v.id===S.venue);
+const C=()=>V().courts.find(c=>c.id===S.court)||V().courts[0];
+const nm=o=>o[lang];
+const fmtDate=d=>new Intl.DateTimeFormat(lang==='ar'?'ar-SA-u-nu-latn-ca-gregory':'en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}).format(new Date(2026,10,d));
+const durLabel=d=>t(d===1?'d1':d===1.5?'d15':'d2');
+const endTime=()=>{const [h,m]=S.time.split(':').map(Number);const e=h*60+m+S.dur*60;return String(Math.floor(e/60)).padStart(2,'0')+':'+String(e%60).padStart(2,'0')};
+const free=(tm)=>hs([S.venue,S.court,S.coach,S.date,tm].join())%5!==0;
+const sar=n=>'SAR '+(Math.round(n*100)/100).toString();
+function costs(){
+  const cr=C().rate*S.dur;
+  const cf=S.coach==='friend'?0:COACHES.find(c=>c.id===S.coach).rate*S.dur;
+  const ef=S.equip==='own'?0:S.equip==='court'?40:60;
+  return {cr,cf,ef,total:cr+cf+ef};
+}
+
+/* ---------- Rendering ---------- */
+const pressed=b=>` aria-pressed="${b}"`;
+function renderVenues(){
+  $('#venues').innerHTML=VENUES.map((v,i)=>`<button class="opt venue" data-a="venue" data-v="${v.id}"${pressed(S.venue===v.id)}><span class="ph">${scene(v.mood,i+3,v.courts[0].s,640,400)}</span><span class="tx"><b>${nm(v)}</b></span></button>`).join('');
+  $('#courts').innerHTML=V().courts.map(c=>`<button class="opt" data-a="court" data-v="${c.id}"${pressed(S.court===c.id)}><b>${nm(c)}</b><small>${lang==='ar'?(c.s==='clay'?'ترابي':'صلب'):(c.s==='clay'?'Clay':'Hard court')} · SAR ${c.rate}/${lang==='ar'?'س':'hr'}</small></button>`).join('');
+}
+function renderCoaches(){
+  $('#coaches').innerHTML=COACHES.map(c=>`<button class="opt" data-a="coach" data-v="${c.id}"${pressed(S.coach===c.id)}><b>${nm(c)}</b><small>${lang==='ar'?c.ta:c.te}</small></button>`).join('')
+   +`<button class="opt" data-a="coach" data-v="friend"${pressed(S.coach==='friend')}><b>${t('coach_friend')}</b><small>${t('coach_friend_s')}</small></button>`;
+  $('#friendBox').hidden=S.coach!=='friend';
+}
+function renderCal(){
+  const dows=lang==='ar'?['ح','ن','ث','ر','خ','ج','س']:['S','M','T','W','T','F','S'];
+  let h=dows.map(d=>`<span class="dow">${d}</span>`).join('');
+  for(let i=0;i<0;i++)h+='<span></span>'; // Nov 1 2026 is a Sunday
+  for(let d=1;d<=30;d++)h+=`<button data-a="date" data-v="${d}" ${d<3?'disabled':''}${pressed(S.date===d)}>${d}</button>`;
+  $('#cal').innerHTML=h;
+  $('#durs').innerHTML=[1,1.5,2].map(d=>`<button class="opt" data-a="dur" data-v="${d}"${pressed(S.dur===d)}>${durLabel(d)}</button>`).join('');
+  $('#times').innerHTML=TIMES.map(tm=>{const ok=S.date&&free(tm);return `<button class="opt" data-a="time" data-v="${tm}" ${S.date&&!ok?'disabled':''}${pressed(S.time===tm)}>${tm}</button>`}).join('');
+}
+function renderProfile(){
+  $('#ages').innerHTML=[['kid','u18'],['adult','o18']].map(([k,l])=>`<button class="opt" data-a="age" data-v="${k}"${pressed(S.age===k)}>${t(l)}</button>`).join('');
+  $('#levels').innerHTML=[['beg','beg'],['int','int'],['adv','adv']].map(([k,l])=>`<button class="opt" data-a="level" data-v="${k}"${pressed(S.level===k)}>${t(l)}</button>`).join('');
+  $('#guardBox').hidden=S.age!=='kid';
+  $('#equip').innerHTML=[['own','eq_own'],['court','eq_court'],['del','eq_del']].map(([k,l])=>`<button class="opt" data-a="equip" data-v="${k}"${pressed(S.equip===k)}><b>${t(l)}</b><small>${t(l+'_s')}</small></button>`).join('');
+}
+function missing(){
+  const m=[];
+  if(!S.time)m.push(t('need_time'));
+  if(!$('#player').value.trim())m.push(t('need_name'));
+  if(S.age==='kid'&&!$('#guardian').value.trim())m.push(t('need_guard'));
+  return m;
+}
+function inviteText(){
+  if(!S.date||!S.time)return '';
+  const c=costs(),each=$('#split').checked?c.total/2:0;
+  return t('inv')({v:nm(V()),c:nm(C()),d:fmtDate(S.date),t:S.time+'–'+endTime(),u:durLabel(S.dur),cost:each?t('inv_cost')(Math.round(each)):''})+' '+t('inv_tail');
+}
+function renderInvite(){
+  const txt=inviteText();
+  $('#inviteText').value=txt||t('f_pick');
+  $('#waInvite').href=txt?'https://wa.me/?text='+encodeURIComponent(txt):'#';
+  $('#waInvite').style.pointerEvents=txt?'auto':'none';$('#waInvite').style.opacity=txt?1:.4;
+  $('#inviteNote').textContent=t('f_note');
+}
+function renderSummary(){
+  const c=costs(),f=S.coach==='friend';
+  const rows=[
+    [t('r_venue'),nm(V())],[t('r_court'),nm(C())],
+    [t('r_coach'),f?t('coach_friend'):nm(COACHES.find(x=>x.id===S.coach))],
+    [t('r_date'),S.date?fmtDate(S.date):'-'],
+    [t('r_time'),S.time?S.time+'–'+endTime():'-'],
+    [t('r_player'),t(S.level)+' · '+t(S.age==='kid'?'u18':'o18')],
+    [t('r_equip'),t({own:'eq_own',court:'eq_court',del:'eq_del'}[S.equip])],
+    [t('r_cr'),sar(c.cr)],[t('r_cf'),sar(c.cf)],[t('r_ef'),sar(c.ef)]
+  ];
+  if(f&&$('#friendName').value.trim())rows.splice(3,0,[t('r_partner'),$('#friendName').value.trim()]);
+  $('#sumList').innerHTML=rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
+  $('#totalVal').textContent=sar(c.total);
+  $('#eachVal').textContent=(f&&$('#split').checked)?sar(c.total/2)+' '+t('each'):'';
+  const m=missing();
+  $('#missing').innerHTML=m.length?`<li style="list-style:none;margin-bottom:2px">${t('need')}</li>`+m.map(x=>`<li>${x}</li>`).join(''):'';
+  $('#confirm').disabled=m.length>0;
+  $('#sumForm').hidden=S.confirmed;$('#sumDone').hidden=!S.confirmed;
+  $('#summary').classList.toggle('done',S.confirmed);
+  if(S.confirmed){
+    $('#refLine').textContent=t('ref')+': DEMO-'+(hs([S.venue,S.court,S.coach,S.date,S.time].join())%9000+1000);
+    $('#doneList').innerHTML=rows.filter((r,i)=>i<7||(f&&r[0]===t('r_partner'))).map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')+`<dt>${t('total')}</dt><dd>${sar(c.total)}${(f&&$('#split').checked)?' · '+sar(c.total/2)+' '+t('each'):''}</dd>`;
+    $('#doneKit').textContent=t({own:'kit_own',court:'kit_court',del:'kit_del'}[S.equip]);
+  }
+}
+function renderAcad(){
+  const F=[['all','fAll'],['kids','fKids'],['adults','fAdults'],['beg','fBeg'],['adv','fAdv']];
+  $('#acFilters').innerHTML=F.map(([k,l])=>`<button data-a="filter" data-v="${k}"${pressed(S.filter===k)}>${t(l)}</button>`).join('');
+  const li=lang==='ar'?1:0;
+  $('#acCards').innerHTML=ACAD.filter(a=>S.filter==='all'||a.cat.includes(S.filter)).map((a,i)=>{
+    const v=VENUES.find(x=>x.id===a.v);
+    return `<article class="card"><div class="ph">${scene(a.mood,i+11,a.court,640,400)}</div><div class="tx"><h3>${nm(a)}</h3><div class="meta"><span>${a.age[li]}</span><span>${nm(v)}</span></div><p>${lang==='ar'?a.da:a.de}</p><p>${a.when[li]}</p><p class="price">${sar(+a.price.slice(4))}${lang==='ar'?' / شهريًا':' / month'}</p></div></article>`;
+  }).join('');
+}
+function renderAll(){renderVenues();renderCoaches();renderCal();renderProfile();renderInvite();renderSummary();renderAcad()}
+
+function applyLang(){
+  document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  $('#l-en').setAttribute('aria-pressed',lang==='en');$('#l-ar').setAttribute('aria-pressed',lang==='ar');
+  renderAll();
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a,v=b.dataset.v;
+  if(a==='venue'){S.venue=v;S.court='c1';S.time=null}
+  else if(a==='court'){S.court=v;S.time=null}
+  else if(a==='coach'){S.coach=v;S.time=null}
+  else if(a==='date'){S.date=+v;S.time=null}
+  else if(a==='dur'){S.dur=+v}
+  else if(a==='time'){S.time=v}
+  else if(a==='age'){S.age=v}
+  else if(a==='level'){S.level=v}
+  else if(a==='equip'){S.equip=v}
+  else if(a==='filter'){S.filter=v;renderAcad();return}
+  renderAll();
+});
+['player','guardian','friendName','friendPhone','split'].forEach(id=>$('#'+id).addEventListener('input',()=>{renderInvite();renderSummary()}));
+$('#confirm').addEventListener('click',()=>{S.confirmed=true;renderSummary();$('#summary').scrollIntoView({behavior:'smooth',block:'start'})});
+$('#again').addEventListener('click',()=>{S.confirmed=false;S.time=null;S.date=null;$('#player').value='';renderAll()});
+$('#l-en').addEventListener('click',()=>{lang='en';applyLang()});
+$('#l-ar').addEventListener('click',()=>{lang='ar';applyLang()});
+$('#copyInvite').addEventListener('click',()=>{
+  const ta=$('#inviteText'),txt=inviteText();
+  if(!txt){$('#inviteNote').textContent=t('f_pick');return}
+  const fb=()=>{ta.focus();ta.select();$('#inviteNote').textContent=t('f_copyfail')};
+  try{navigator.clipboard.writeText(txt).then(()=>{$('#inviteNote').textContent=t('f_copied')},fb)}catch(_){fb()}
+});
+
+$('#heroScene').innerHTML=scene('gold',7,'hard',1600,900);
+applyLang();
+</script>
+
+</body></html>
